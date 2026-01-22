@@ -71,6 +71,21 @@ export const cnb = karin.task(
   },
 )
 
+export const codeberg = karin.task(
+  'karin-plugin-git:issue:codeberg',
+  Config.codeberg.cron || '0 */5 * * * *',
+  async () => {
+    const { token } = Config.codeberg
+    if (isEmpty(token)) return logger.warn('未配置Codeberg Token, 跳过任务')
+    try {
+      const client = Client.codeberg()
+      await handleRepoIssue(client, Platform.Codeberg)
+    } catch (e) {
+      logger.error(e)
+    }
+  },
+)
+
 const handleRepoIssue = async (client: ClientType, platform: Platform) => {
   const all = await db.event.GetAll(platform, EventType.Issue)
   const groupMap = new Map<
@@ -155,7 +170,10 @@ const handleRepoIssue = async (client: ClientType, platform: Platform) => {
   for (const [groupKey, issues] of groupMap) {
     const [groupId, botId] = groupKey.split('-')
     const imagePromises = issues.map(async (issue) => {
-      const issueImage = await Render.render('issue/index', { issue })
+      const issueImage = await Render.render('issue/index', {
+        issue,
+        platform,
+      })
       return issueImage
     })
 

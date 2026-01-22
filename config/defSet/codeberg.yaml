@@ -1,0 +1,4 @@
+cron: '0 */5 * * * *'
+baseUrl: 'https://codeberg.org/api/v1'
+proxy: ''
+token: ''

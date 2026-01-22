@@ -34,6 +34,9 @@ export const AddRepo = karin.command(
     } else if (platform?.toLowerCase() === 'cnb') {
       platformName = Platform.Cnb
       client = Client.cnb()
+    } else if (platform?.toLowerCase() === 'codeberg') {
+      platformName = Platform.Codeberg
+      client = Client.codeberg()
     } else {
       platformName = Platform.GitHub
       client = Client.github()
@@ -132,6 +135,8 @@ export const RemoveRepo = karin.command(
       platformName = Platform.Gitee
     } else if (platform?.toLowerCase() === 'cnb') {
       platformName = Platform.Cnb
+    } else if (platform?.toLowerCase() === 'codeberg') {
+      platformName = Platform.Codeberg
     }
 
     const repoInfo = await db.repo.GetRepo(botId, groupId, owner, repo)
@@ -187,6 +192,8 @@ export const SetToken = karin.command(
       platformName = Platform.Gitee
     } else if (platform?.toLowerCase() === 'cnb') {
       platformName = Platform.Cnb
+    } else if (platform?.toLowerCase() === 'codeberg') {
+      platformName = Platform.Codeberg
     }
     Config.Modify(platformName, 'token', Token)
     await e.reply(`设置${platformName}访问令牌成功`)

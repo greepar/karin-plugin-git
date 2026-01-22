@@ -7,6 +7,7 @@ export const enum Platform {
   Gitee = 'gitee',
   GitCode = 'gitcode',
   Cnb = 'cnb',
+  Codeberg = 'codeberg',
 }
 
 export const enum EventType {

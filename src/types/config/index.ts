@@ -21,4 +21,9 @@ export interface ConfigType {
   gitcode: ClientConfigType
   /// Cnb配置
   cnb: ClientConfigType
+  /// Codeberg配置
+  codeberg: ClientConfigType & {
+    /// API 基础地址
+    baseUrl: string
+  }
 }

@@ -75,6 +75,21 @@ export const cnb = karin.task(
   },
 )
 
+export const codeberg = karin.task(
+  'karin-plugin-git:push:codeberg',
+  Config.codeberg.cron || '0 */5 * * * *',
+  async () => {
+    const token = Config.codeberg.token
+    if (isEmpty(token)) return logger.warn('未配置Codeberg Token, 跳过任务')
+    try {
+      const client = Client.codeberg()
+      await handleRepoPush(client, Platform.Codeberg)
+    } catch (e) {
+      logger.error(e)
+    }
+  },
+)
+
 export const push = karin.command(
   /^#?git(?:推送|push)订阅仓库$/i,
   async (e) => {
@@ -101,6 +116,10 @@ export const push = karin.command(
           if (isEmpty(Config.cnb.token))
             return await e.reply('Cnb Token, 请先配置Cnb Token')
           client = Client.cnb()
+        } else if (event.platform == Platform.Codeberg) {
+          if (isEmpty(Config.codeberg.token))
+            return await e.reply('未配置Codeberg Token, 请先配置Codeberg Token')
+          client = Client.codeberg()
         } else {
           if (isEmpty(Config.github.token))
             return await e.reply('未配置GitHub Token, 请先配置GitHub Token')
@@ -131,6 +150,7 @@ export const push = karin.command(
 
             return await Render.render('commit/index', {
               commit: pushCommitInfo,
+              platform: event.platform,
             })
           } catch (error) {
             logger.warn(
@@ -170,6 +190,7 @@ export const push = karin.command(
 
           return await Render.render('issue/index', {
             issue: pushIssueInfo,
+            platform: event.platform,
           })
         })
 
@@ -273,6 +294,7 @@ const handleRepoPush = async (client: ClientType, platform: Platform) => {
 
       return await Render.render('commit/index', {
         commit: pushInfo,
+        platform,
       })
     })
 
