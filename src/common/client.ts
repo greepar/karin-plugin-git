@@ -1,6 +1,7 @@
 import { Config } from '@/common'
 import { isEmpty } from 'es-toolkit/compat'
 import { CnbClient, GitCodeClient, GiteeClient, GithubClient } from 'nipaw'
+import { CompatMethods } from '@/types/common/client'
 
 const normalizeIssueState = (state: string | undefined) => {
   if (state === 'open') return 'Opened'
@@ -9,7 +10,7 @@ const normalizeIssueState = (state: string | undefined) => {
 }
 
 const attachCompatMethods = (client: object) => {
-  const typed = client as {
+  const typed = client as CompatMethods & {
     getCommitInfo?: (...args: any[]) => Promise<any>
     getRepoInfo?: (...args: any[]) => Promise<any>
     getIssueInfo?: (...args: any[]) => Promise<any>
@@ -55,7 +56,7 @@ const attachCompatMethods = (client: object) => {
     ) => typed.issue!().list(owner, repo, option)
   }
 
-  return typed
+  return typed as CompatMethods
 }
 
 const createFetchWithProxy = (proxy: string) => {

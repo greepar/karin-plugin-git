@@ -2,7 +2,7 @@ import { Version } from '@/root'
 import { karinPathBase } from 'node-karin'
 import sqlite from 'node-karin/sqlite3'
 
-let dbClient: sqlite.Database | null = null
+let dbClient: any = null
 
 export const createClient = async () => {
   if (!dbClient) {
